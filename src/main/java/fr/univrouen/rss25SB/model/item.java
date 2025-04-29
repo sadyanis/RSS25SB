@@ -23,6 +23,7 @@ public class item {
 
     }
 
+
     @Override
     public String toString() {
         return ("Article : "+ title + "\n(" + guid + ") Le =  "+published  );
