@@ -1,9 +1,11 @@
 package fr.univrouen.rss25SB.controllers;
 
-import fr.univrouen.rss25SB.model.TestRSS;
-import fr.univrouen.rss25SB.model.item;
+import fr.univrouen.rss25SB.model.*;
+import org.hibernate.cache.spi.support.CacheUtils;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Date;
 
 @RestController
 public class PostController {
@@ -17,10 +19,15 @@ public class PostController {
      TestRSS testRSS = new TestRSS();
      return testRSS.loadFileXML();
  }
- @PostMapping(value="/xml", produces = MediaType.APPLICATION_XML_VALUE)
- @ResponseBody
- public item getXML(){
-     item it = new item("12345678","Test item","2022-05-01T11:22:33");
-     return it;
- }
+
+    @PostMapping(value = "/xml", produces = MediaType.APPLICATION_XML_VALUE)
+    @ResponseBody
+    public item  getXML() {
+     category cat = new category("12345678");
+     author aut = new author("nom", "prenom", "email");
+        Image img = new Image("image", "image.png", "image/jpeg", 255);
+        content cont = new content("content", "content");
+        item it = new item ("12345678", "123", "2023-10-01",cat,img,cont,aut);
+        return it;
+    }
 }

@@ -3,21 +3,37 @@ package fr.univrouen.rss25SB.model;
 
 import jakarta.xml.bind.annotation.*;
 
+import java.util.Date;
+
 @XmlRootElement(name="item")
-@XmlAccessorType(XmlAccessType.PROPERTY)
+@XmlAccessorType(XmlAccessType.FIELD)
 public class item {
-    @XmlAttribute
+    @XmlElement
     private String guid;
     @XmlElement
     private String title;
     @XmlElement
-    private String published;
+    private category category;
+    @XmlElement
+    private String pubDate;
+    @XmlElement
+    private Image image;
+    @XmlElement
+    private content content;
+    @XmlElement
+    private author author;
 
-    public item(String guid, String title, String published) {
+
+
+    public item(String guid, String title, String published , category category , Image image, content content, author author) {
         super();
         this.guid = guid;
         this.title = title;
-        this.published = published;
+        this.pubDate = published;
+        this.category = category;
+        this.image = image;
+        this.content = content;
+        this.author = author;
     }
     public item(){
 
@@ -26,6 +42,6 @@ public class item {
 
     @Override
     public String toString() {
-        return ("Article : "+ title + "\n(" + guid + ") Le =  "+published  );
+        return ("Article : "+ title + "\n(" + guid + ") Le =  "+pubDate + category +  "\n");
     }
 }
