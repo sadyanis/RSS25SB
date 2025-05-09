@@ -23,4 +23,12 @@ public class Feed {
 
     @OneToMany(mappedBy = "feed", cascade = CascadeType.ALL)
     private List<Item> items;
+
+    public Long getId() {
+        return this.id;
+    }
+
+    public List<Item> getItems() {
+        return this.items;
+    }
 }
