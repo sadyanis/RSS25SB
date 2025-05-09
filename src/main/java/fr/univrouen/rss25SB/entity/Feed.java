@@ -1,5 +1,14 @@
 package fr.univrouen.rss25SB.entity;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+
 @Entity
 public class Feed {
     @Id @GeneratedValue
