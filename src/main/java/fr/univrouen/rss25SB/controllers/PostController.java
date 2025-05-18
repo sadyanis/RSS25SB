@@ -1,7 +1,9 @@
 package fr.univrouen.rss25SB.controllers;
 
+import fr.univrouen.rss25SB.entity.Feed;
 import fr.univrouen.rss25SB.entity.Item;
 import fr.univrouen.rss25SB.model.*;
+import fr.univrouen.rss25SB.repository.FeedRepository;
 import fr.univrouen.rss25SB.repository.ItemRepository;
 import fr.univrouen.rss25SB.utils.Utils;
 
@@ -12,7 +14,9 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -21,6 +25,9 @@ public class PostController {
 
     @Autowired
     ItemRepository itemRepository;
+
+    @Autowired
+    FeedRepository feedRepository;
 
     @PostMapping(value="/testpost",consumes = "application/xml")
         public String testPost(@RequestBody String flux){
@@ -35,44 +42,71 @@ public class PostController {
 
     @PostMapping(value = "/xml", produces = MediaType.APPLICATION_XML_VALUE)
     @ResponseBody
-    public item  getXML() {
-     category cat = new category("12345678");
-     author aut = new author("nom", "prenom", "email");
-        Image img = new Image("image", "image.png", "image/jpeg", 255);
-        content cont = new content("content", "content");
-        item it = new item ("12345678", "123", "2023-10-01",cat,img,cont,aut);
+    public ItemJAXB  getXML() {
+        CategoryJAXB cat = new CategoryJAXB("12345678");
+        AuthorJAXB aut = new AuthorJAXB("nom", "prenom", "email");
+        ImageJAXB img = new ImageJAXB("image", "image.png", "image/jpeg", 255);
+        ContentJAXB cont = new ContentJAXB("content", "content");
+        ItemJAXB it = new ItemJAXB ("12345678", "123", "2023-10-01",cat,img,cont,aut);
         return it;
     }
 
 
     @PostMapping(value = "/rss25SB/insert", consumes = MediaType.APPLICATION_XML_VALUE, produces = MediaType.APPLICATION_XML_VALUE)
-    public ResponseEntity<String> insertItem(@RequestBody String itemXml) {
+    public ResponseEntity<String> insertItem(@RequestBody String feedXml) {
         try {
-            if (!Utils.isValidXml(itemXml)) {
+            if (!Utils.isValidXml(feedXml)) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body("<rss25SB><status>ERROR</status><message>XML invalid according to XSD</message></rss25SB>");
+                    .body("<rss25SB><status>ERROR</status><message>XML invalid according to XSD</message></rss25SB>");
             }
+    
+            
+            //convertir le string xml en object jaxb d'abord
+            FeedJAXB feedJaxb = Utils.convertXmlToFeed(feedXml) ;
+            
 
-            Item newItem = Utils.convertXmlToItem(itemXml);
 
-            Optional<Item> existingItem = itemRepository.findByTitleAndDate(newItem.getTitle(), newItem.getPublished());
-            if (existingItem.isPresent()) {
+            // convertir l'objet jaxb en feed entity
+            Feed feed = Utils.toFeedEntity(feedJaxb);
+            Long lastInsertedId = null;
+            
+            
+            List<Item> filteredItems = new ArrayList<>();
+            for (Item item : feed.getItems()) {
+                List<Item> existingItem = itemRepository.findByTitleAndPublished(item.getTitle(), item.getPublished());
+                if (existingItem.isEmpty()) {
+                    filteredItems.add(item);
+                }
+            }
+            feed.setItems(filteredItems);
+            Feed savedFeed = feedRepository.save(feed);
+            lastInsertedId = savedFeed.getId();
+            // //boucle sur les items du feed convertit
+            // for (Item item : feed.getItems()) {
+            //     //Optional<Item> existingItem = itemRepository.findByTitleAndPublished(item.getTitle(), item.getPublished());
+            //     List<Item> existingItem = itemRepository.findByTitleAndPublished(item.getTitle(), item.getPublished());
+            //     System.out.println("ITEM: "+ existingItem);
+            //     if (existingItem.isEmpty()) {
+            //         // Associer l’item au feed persisté
+            //         item.setFeed(savedFeed);
+            //         Item saved = itemRepository.save(item);
+            //         lastInsertedId = saved.getId();
+            //         System.out.println("HOT3: "+lastInsertedId);
+            //     }
+            // }
+    
+            if (lastInsertedId == null) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body("<rss25SB><status>ERROR</status><message>Article already exists</message></rss25SB>");
+                    .body("<rss25SB><status>ERROR</status><message>No new articles to insert</message></rss25SB>");
             }
-
-            
-            
-            itemRepository.save(newItem);
-
-            
-            String responseXml = "<rss25SB><status>INSERTED</status><id>" + newItem.getId() + "</id></rss25SB>";
+    
+            String responseXml = "<rss25SB><status>INSERTED</status><id>" + lastInsertedId + "</id></rss25SB>";
             return ResponseEntity.ok(responseXml);
-
+    
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("<rss25SB><status>ERROR</status><message>" + e.getMessage() + "</message></rss25SB>");
+                .body("<rss25SB><status>ERROR</status><message>" + e.getMessage() + "</message></rss25SB>");
         }
     }
 }

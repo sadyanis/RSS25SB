@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://univ.fr/rss25"  xmlns="http://univ.fr/rss25" elementFormDefault="qualified">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://univrouen.fr/rss25"  xmlns="http://univrouen.fr/rss25" elementFormDefault="qualified">
 		
    
     <xs:simpleType name="string128Type">
@@ -16,14 +16,18 @@
     
     <xs:simpleType name="isoDateTimeType">
         <xs:restriction base="xs:string">
-            <xs:pattern value="\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(Z|[+-]\d{2}:\d{2})"/>
+            <xs:pattern value="\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}([Z]|([+-]\d{2}:\d{2}))?"/>
         </xs:restriction>
     </xs:simpleType>
     
-    <xs:simpleType name="guidType">
+    <!-- <xs:simpleType name="guidType">
         <xs:restriction base="xs:string">
-            <xs:pattern value="[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}"/>
+            <xs:element name="guid" type="xs:anyURI"/>
         </xs:restriction>
+    </xs:simpleType> -->
+
+    <xs:simpleType name="guidType">
+        <xs:restriction base="xs:anyURI"/>
     </xs:simpleType>
     
     <xs:simpleType name="emailType">
@@ -49,6 +53,7 @@
         <xs:restriction base="xs:string">
             <xs:enumeration value="GIF"/>
             <xs:enumeration value="JPEG"/>
+            <xs:enumeration value="jpeg"/>
             <xs:enumeration value="JPG"/>
             <xs:enumeration value="BMP"/>
             <xs:enumeration value="PNG"/>
@@ -68,7 +73,7 @@
     
     <xs:simpleType name="mimeType">
         <xs:restriction base="xs:string">
-            <xs:pattern value="[a-zA-Z0-9][a-zA-Z0-9!#$&amp;^_.+-]*/[a-zA-Z0-9][a-zA-Z0-9!#$&amp;^_.+-]*"/>
+            <xs:pattern value="[a-zA-Z0-9][a-zA-Z0-9!#$&amp;^_.+\-]*/[a-zA-Z0-9][a-zA-Z0-9!#$&amp;^_.+\-]*"/>
         </xs:restriction>
     </xs:simpleType>
     <!--  
@@ -87,6 +92,7 @@
     
     
   <!--  <xs:element name="guid" type="guidType"/> -->  
+        
     
     
         <xs:complexType name="categoryType">
@@ -174,7 +180,7 @@
                 <xs:element name="item" type="itemType" minOccurs="1" maxOccurs="10"/>
             </xs:sequence>
             <xs:attribute name="lang" type="langType" use="optional"/>
-            <xs:attribute name="version" type="xs:string" use="required" fixed="25"/>
+            <xs:attribute name="ver" type="xs:string" use="required" fixed="25"/>
         </xs:complexType>
     
     

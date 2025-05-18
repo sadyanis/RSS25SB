@@ -3,6 +3,11 @@ package fr.univrouen.rss25SB.utils;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
@@ -18,8 +23,19 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.xml.sax.SAXException;
 
+import fr.univrouen.rss25SB.model.AuthorJAXB;
+import fr.univrouen.rss25SB.model.CategoryJAXB;
+import fr.univrouen.rss25SB.model.ContentJAXB;
+import fr.univrouen.rss25SB.model.FeedJAXB;
+import fr.univrouen.rss25SB.model.ImageJAXB;
+import fr.univrouen.rss25SB.model.ItemJAXB;
+
+import fr.univrouen.rss25SB.entity.Author;
+import fr.univrouen.rss25SB.entity.Content;
+import fr.univrouen.rss25SB.entity.Feed;
 import fr.univrouen.rss25SB.entity.Item;
-import fr.univrouen.rss25SB.model.item;
+import fr.univrouen.rss25SB.entity.Image;
+import fr.univrouen.rss25SB.entity.Category;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Unmarshaller;
@@ -89,10 +105,139 @@ public class Utils {
         }
     }
 
-    public static Item convertXmlToItem(String xml) throws JAXBException {
-        JAXBContext context = JAXBContext.newInstance(item.class);
+    // public static Item convertXmlToItem(String xml) throws JAXBException {
+    //     JAXBContext context = JAXBContext.newInstance(ItemJAXB.class);
+    //     Unmarshaller unmarshaller = context.createUnmarshaller();
+    //     StringReader reader = new StringReader(xml);
+    //     return (ItemJAXB) unmarshaller.unmarshal(reader);
+    // }
+
+    public static FeedJAXB convertXmlToFeed(String feedXml) throws JAXBException{
+        JAXBContext context = JAXBContext.newInstance(FeedJAXB.class);
         Unmarshaller unmarshaller = context.createUnmarshaller();
-        StringReader reader = new StringReader(xml);
-        return (Item) unmarshaller.unmarshal(reader);
+        StringReader reader = new StringReader(feedXml);
+        return (FeedJAXB) unmarshaller.unmarshal(reader);
     }
+
+    public static Feed toFeedEntity(FeedJAXB feedJaxb) {
+        Feed feedEntity = new Feed();
+
+        feedEntity.setLang(feedJaxb.getLang());
+        feedEntity.setVer(feedJaxb.getVer());
+        feedEntity.setTitle(feedJaxb.getTitle());
+        feedEntity.setCopyright(feedJaxb.getCopyright());
+
+        if (feedJaxb.getPubDate() != null) {
+            feedEntity.setPubDate(LocalDateTime.parse(feedJaxb.getPubDate()));
+        }
+
+        if (feedJaxb.getLink() != null) {
+            feedEntity.setSelfLink(feedJaxb.getLink().getHref());
+        }
+
+        if (feedJaxb.getItems() != null) {
+            List<Item> itemsEntities = feedJaxb.getItems().stream()
+                .map(itemJaxb -> {
+                    Item itemEntity = toItemEntity(itemJaxb);
+                    itemEntity.setFeed(feedEntity); 
+                    return itemEntity;
+                })
+                .collect(Collectors.toList());
+
+            feedEntity.setItems(itemsEntities);
+        } else {
+            feedEntity.setItems(new ArrayList<>());
+        }
+
+        return feedEntity;
+    }
+
+    public static Item toItemEntity(ItemJAXB itemJaxb) {
+        Item itemEntity = new Item();
+
+        itemEntity.setGuid(itemJaxb.getGuid());
+        itemEntity.setTitle(itemJaxb.getTitle());
+
+        if (itemJaxb.getPubDate() != null) {
+            try {
+                LocalDateTime published = LocalDateTime.parse(itemJaxb.getPubDate());
+                itemEntity.setPublished(published);
+            } catch (DateTimeParseException e) {
+                System.err.println("Erreur conversion date pubDate : " + e.getMessage());
+            }
+        }
+
+        
+        if (itemJaxb.getContent() != null) {
+            Content contentEntity = toContentEntity(itemJaxb.getContent());
+            itemEntity.setContent(contentEntity);
+        }
+
+        
+        if (itemJaxb.getAuthor() != null) {
+            Author authorEntity = toAuthorEntity(itemJaxb.getAuthor());
+            itemEntity.setAuthor(authorEntity);
+        }
+
+        /*
+        
+        if (itemJaxb.getAuthor() != null) {
+            Author authorEntity = toAuthorEntity(itemJaxb.getAuthor());
+            authorEntity.setRole(Role.AUTHOR);  // ou null par défaut
+            itemEntity.setAuthor(authorEntity);
+        }// } else if (itemJaxb.getContributor() != null) {
+        //     Author contributorEntity = toAuthorEntity(itemJaxb.getContributor());
+        //     contributorEntity.setRole(Role.CONTRIBUTOR);  // ici on précise le rôle
+        //     itemEntity.setAuthor(contributorEntity);
+        // } */
+
+        // Copier Image
+        if (itemJaxb.getImage() != null) {
+            Image imageEntity = toImageEntity(itemJaxb.getImage());
+            itemEntity.setImage(imageEntity);
+        }
+
+        // Copier Category
+        if (itemJaxb.getCategory() != null) {
+            Category categoryEntity = toCategoryEntity(itemJaxb.getCategory());
+            itemEntity.setCategory(categoryEntity);
+        }
+
+        return itemEntity;
+    }
+
+    public static Content toContentEntity(ContentJAXB cJaxb) {
+        if (cJaxb == null) return null;
+        Content cEntity = new Content();
+        cEntity.setType(cJaxb.getType());
+        
+        cEntity.setContent(cJaxb.getContent()); // ajouter src apres
+        return cEntity;
+    }
+
+    public static Author toAuthorEntity(AuthorJAXB aJaxb) {
+        if (aJaxb == null) return null;
+        Author aEntity = new Author();
+        aEntity.setName(aJaxb.getName());
+        aEntity.setUri(aJaxb.getUri());
+        return aEntity;
+    }
+
+    public static Category toCategoryEntity(CategoryJAXB catJaxb) {
+        if (catJaxb == null) return null;
+        Category catEntity = new Category();
+        catEntity.setTerm(catJaxb.getTerm());
+        return catEntity;
+    }
+
+    public static Image toImageEntity(ImageJAXB iJaxb) {
+        if (iJaxb == null) return null;
+        Image iEntity = new Image();
+        iEntity.setAlt(iJaxb.getAlt());
+        iEntity.setType(iJaxb.getType());
+        iEntity.setHref(iJaxb.getHref());
+        return iEntity;
+    }
+
+
 }

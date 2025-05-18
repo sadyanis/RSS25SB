@@ -6,6 +6,7 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
@@ -98,21 +99,27 @@ public class Item {
     private String guid;
     private String title;
     
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "content_id")
     private Content content;
+
     private LocalDateTime published;
     private LocalDateTime updated;
 
     @ManyToOne
+    @JoinColumn(name = "feed_id")
     private Feed feed;
 
     @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "author_id")
     private Author author;
 
     @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "image_id")
     private Image image;
 
     @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "category_id")
     private Category category;
 }
 
