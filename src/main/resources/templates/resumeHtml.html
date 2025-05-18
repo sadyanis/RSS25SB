@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Résumé des Items RSS</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #fd3232;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+<h1>Liste des Items RSS</h1>
+
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Titre</th>
+        <th>GUID</th>
+        <th>Date de publication</th>
+        <th>Auteur</th>
+        <th>Catégorie</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="item : ${items}">
+        <td th:text="${item.id}"></td>
+        <td th:text="${item.title}"></td>
+        <td th:text="${item.guid}"></td>
+        <td th:text="${item.published}"></td>
+        <td th:text="${item.author?.getName()}"></td>
+        <td th:text="${item.category?.getTerm()}"></td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>
