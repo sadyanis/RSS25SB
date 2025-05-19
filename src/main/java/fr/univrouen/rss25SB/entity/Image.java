@@ -36,5 +36,12 @@ public class Image {
         this.href = href;
     }
     private String href;
+    private int length;
+    public int getLength() {
+        return length;
+    }
+    public void setLength(int length) {
+        this.length = length;
+    }
 }
 

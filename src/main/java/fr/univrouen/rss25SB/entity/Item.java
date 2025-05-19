@@ -1,15 +1,9 @@
 package fr.univrouen.rss25SB.entity;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 
 @Entity
 public class Item {
@@ -72,12 +66,12 @@ public class Item {
         this.feed = feed;
     }
 
-    public Author getAuthor() {
-        return author;
+    public List<Author> getAuthor() {
+        return authors;
     }
 
-    public void setAuthor(Author author) {
-        this.author = author;
+    public void setAuthor(List<Author> author) {
+        this.authors = author;
     }
 
     public Image getImage() {
@@ -88,12 +82,18 @@ public class Item {
         this.image = image;
     }
 
-    public Category getCategory() {
+    public List<Category> getCategory() {
         return category;
     }
 
-    public void setCategory(Category category) {
+    public void setCategory(List<Category> category) {
         this.category = category;
+    }
+    public List<Author> getContributors() {
+        return contributors;
+    }
+    public void setContributors(List<Author> contributors) {
+        this.contributors = contributors;
     }
 
     private String guid;
@@ -110,16 +110,27 @@ public class Item {
     @JoinColumn(name = "feed_id")
     private Feed feed;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "author_id")
-    private Author author;
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "item_author",
+            joinColumns = @JoinColumn(name = "item_id"),
+            inverseJoinColumns = @JoinColumn(name = "author_id"))
+
+    private List<Author> authors;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "image_id")
     private Image image;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "category_id")
-    private Category category;
+    @ManyToMany
+    @JoinTable(name = "item_categories",
+            joinColumns = @JoinColumn(name = "item_id"),
+            inverseJoinColumns = @JoinColumn(name = "category_id"))
+    private List<Category> category;
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "item_contributor",
+     joinColumns = @JoinColumn(name= "item_id"),
+    inverseJoinColumns = @JoinColumn(name= "contributor_id"))
+    private List<Author> contributors;
 }
 

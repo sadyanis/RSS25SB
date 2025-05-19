@@ -11,8 +11,12 @@ public class Author {
     private Long id;
 
     private String name;
+    private String email;
     private String uri;
     private Role role;
+    public String getEmail() {
+        return email;
+    }
     public Long getId() {
         return id;
     }

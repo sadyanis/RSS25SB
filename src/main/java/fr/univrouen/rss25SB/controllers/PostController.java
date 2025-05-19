@@ -43,11 +43,15 @@ public class PostController {
     @PostMapping(value = "/xml", produces = MediaType.APPLICATION_XML_VALUE)
     @ResponseBody
     public ItemJAXB  getXML() {
+        List<CategoryJAXB> contributors = new ArrayList<>();
+        List<AuthorJAXB> authors = new ArrayList<>();
         CategoryJAXB cat = new CategoryJAXB("12345678");
         AuthorJAXB aut = new AuthorJAXB("nom", "prenom", "email");
         ImageJAXB img = new ImageJAXB("image", "image.png", "image/jpeg", 255);
         ContentJAXB cont = new ContentJAXB("content", "content");
-        ItemJAXB it = new ItemJAXB ("12345678", "123", "2023-10-01",cat,img,cont,aut);
+        contributors.add(cat);
+        authors.add(aut);
+        ItemJAXB it = new ItemJAXB ("12345678", "123", "2023-10-01",contributors,img,cont,authors);
         return it;
     }
 

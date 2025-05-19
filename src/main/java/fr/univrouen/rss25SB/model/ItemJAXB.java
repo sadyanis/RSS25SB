@@ -4,6 +4,7 @@ package fr.univrouen.rss25SB.model;
 import jakarta.xml.bind.annotation.*;
 
 import java.util.Date;
+import java.util.List;
 
 @XmlRootElement(name="item")
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -15,7 +16,7 @@ public class ItemJAXB {
     private String title;
 
     @XmlElement(namespace="http://univrouen.fr/rss25")
-    private CategoryJAXB category;
+    private List<CategoryJAXB> category;
 
     @XmlElement(name="published", namespace="http://univrouen.fr/rss25") 
     private String published;
@@ -29,11 +30,11 @@ public class ItemJAXB {
     public void setPublished(String published) {
         this.published = published;
     }
-    public AuthorJAXB getContributor() {
-        return contributor;
+    public List<ContributorJAXB> getContributor() {
+        return contributors;
     }
-    public void setContributor(AuthorJAXB contributor) {
-        this.contributor = contributor;
+    public void setContributor(List<ContributorJAXB> contributor) {
+        this.contributors = contributor;
     }
 
 
@@ -41,14 +42,14 @@ public class ItemJAXB {
     private ContentJAXB content;
 
     @XmlElement(name="author", namespace="http://univrouen.fr/rss25")
-    private AuthorJAXB author;
+    private List<AuthorJAXB> authors;
 
     @XmlElement(name="contributor", namespace="http://univrouen.fr/rss25")
-    private AuthorJAXB contributor;
+    private List<ContributorJAXB> contributors;
 
 
 
-    public ItemJAXB(String guid, String title, String published , CategoryJAXB category , ImageJAXB image, ContentJAXB content, AuthorJAXB author) {
+    public ItemJAXB(String guid, String title, String published , List<CategoryJAXB> category , ImageJAXB image, ContentJAXB content, List<AuthorJAXB> author) {
         super();
         this.guid = guid;
         this.title = title;
@@ -56,7 +57,7 @@ public class ItemJAXB {
         this.category = category;
         this.image = image;
         this.content = content;
-        this.author = author;
+        this.authors = author;
     }
     public String getGuid() {
         return guid;
@@ -70,10 +71,10 @@ public class ItemJAXB {
     public void setTitle(String title) {
         this.title = title;
     }
-    public CategoryJAXB getCategory() {
+    public List<CategoryJAXB> getCategory() {
         return category;
     }
-    public void setCategory(CategoryJAXB category) {
+    public void setCategory(List<CategoryJAXB> category) {
         this.category = category;
     }
     public String getPubDate() {
@@ -94,11 +95,11 @@ public class ItemJAXB {
     public void setContent(ContentJAXB content) {
         this.content = content;
     }
-    public AuthorJAXB getAuthor() {
-        return author;
+    public List<AuthorJAXB> getAuthor() {
+        return authors;
     }
-    public void setAuthor(AuthorJAXB author) {
-        this.author = author;
+    public void setAuthor(List<AuthorJAXB> author) {
+        this.authors = author;
     }
     public ItemJAXB(){
 

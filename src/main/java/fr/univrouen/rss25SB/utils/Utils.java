@@ -49,14 +49,14 @@ public class Utils {
                "<published>" + item.getPublished() + "</published>" +
                "<updated>" + item.getUpdated() + "</updated>" +
                "<author>" +
-               "<name>" + item.getAuthor().getName() + "</name>" +
+               "<name>" + item.getAuthor().get(0).getName() + "</name>" +
                "</author>" +
                "<image>" +
                "<alt>" + item.getImage().getAlt() + "</alt>" +
                "<href>" + item.getImage().getHref() + "</href>" +
                "</image>" +
                "<category>" +
-               "<term>" + item.getCategory().getTerm() + "</term>" +
+               "<term>" + item.getCategory().get(0).getTerm() + "</term>" +
                "</category>" +
                "</item>";
     }
@@ -174,10 +174,10 @@ public class Utils {
         }
 
         
-        if (itemJaxb.getAuthor() != null) {
-            Author authorEntity = toAuthorEntity(itemJaxb.getAuthor());
-            itemEntity.setAuthor(authorEntity);
-        }
+//        if (itemJaxb.getAuthor() != null) {
+//            Author authorEntity = toAuthorEntity(itemJaxb.getAuthor());
+//            itemEntity.setAuthor(authorEntity);
+//        }
 
         /*
         
@@ -198,10 +198,10 @@ public class Utils {
         }
 
         // Copier Category
-        if (itemJaxb.getCategory() != null) {
-            Category categoryEntity = toCategoryEntity(itemJaxb.getCategory());
-            itemEntity.setCategory(categoryEntity);
-        }
+//        if (itemJaxb.getCategory() != null) {
+//            Category categoryEntity = toCategoryEntity(itemJaxb.getCategory());
+//            itemEntity.setCategory(categoryEntity);
+//        }
 
         return itemEntity;
     }
