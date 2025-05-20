@@ -1,5 +1,6 @@
 package fr.univrouen.rss25SB.controllers;
 
+import fr.univrouen.rss25SB.Services.Rss25Service;
 import fr.univrouen.rss25SB.entity.Feed;
 import fr.univrouen.rss25SB.entity.Item;
 import fr.univrouen.rss25SB.model.*;
@@ -22,7 +23,8 @@ import java.util.Optional;
 @RestController
 public class PostController {
 
-
+    @Autowired
+    Rss25Service rss25Service;
     @Autowired
     ItemRepository itemRepository;
 
@@ -57,60 +59,68 @@ public class PostController {
 
 
     @PostMapping(value = "/rss25SB/insert", consumes = MediaType.APPLICATION_XML_VALUE, produces = MediaType.APPLICATION_XML_VALUE)
+
     public ResponseEntity<String> insertItem(@RequestBody String feedXml) {
-        try {
-            if (!Utils.isValidXml(feedXml)) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("<rss25SB><status>ERROR</status><message>XML invalid according to XSD</message></rss25SB>");
-            }
-    
-            
-            //convertir le string xml en object jaxb d'abord
-            FeedJAXB feedJaxb = Utils.convertXmlToFeed(feedXml) ;
-            
-
-
-            // convertir l'objet jaxb en feed entity
-            Feed feed = Utils.toFeedEntity(feedJaxb);
-            Long lastInsertedId = null;
-            
-            
-            List<Item> filteredItems = new ArrayList<>();
-            for (Item item : feed.getItems()) {
-                List<Item> existingItem = itemRepository.findByTitleAndPublished(item.getTitle(), item.getPublished());
-                if (existingItem.isEmpty()) {
-                    filteredItems.add(item);
-                }
-            }
-            feed.setItems(filteredItems);
-            Feed savedFeed = feedRepository.save(feed);
-            lastInsertedId = savedFeed.getId();
-            // //boucle sur les items du feed convertit
-            // for (Item item : feed.getItems()) {
-            //     //Optional<Item> existingItem = itemRepository.findByTitleAndPublished(item.getTitle(), item.getPublished());
-            //     List<Item> existingItem = itemRepository.findByTitleAndPublished(item.getTitle(), item.getPublished());
-            //     System.out.println("ITEM: "+ existingItem);
-            //     if (existingItem.isEmpty()) {
-            //         // Associer l’item au feed persisté
-            //         item.setFeed(savedFeed);
-            //         Item saved = itemRepository.save(item);
-            //         lastInsertedId = saved.getId();
-            //         System.out.println("HOT3: "+lastInsertedId);
-            //     }
-            // }
-    
-            if (lastInsertedId == null) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("<rss25SB><status>ERROR</status><message>No new articles to insert</message></rss25SB>");
-            }
-    
-            String responseXml = "<rss25SB><status>INSERTED</status><id>" + lastInsertedId + "</id></rss25SB>";
-            return ResponseEntity.ok(responseXml);
-    
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("<rss25SB><status>ERROR</status><message>" + e.getMessage() + "</message></rss25SB>");
+        try{
+            String reponse = rss25Service.insertFeedFromXml(feedXml);
+            HttpStatus status = reponse.contains("<status>ERROR</status>")?HttpStatus.BAD_REQUEST:HttpStatus.OK;
+            return ResponseEntity.status(status).body(reponse);
+        }catch(Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("<rss25SB><status>ERROR</status><message>" + e.getMessage() + "</message></rss25SB>");
         }
+    //     try {
+    //         if (!Utils.isValidXml(feedXml)) {
+    //             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+    //                 .body("<rss25SB><status>ERROR</status><message>XML invalid according to XSD</message></rss25SB>");
+    //         }
+    
+            
+    //         //convertir le string xml en object jaxb d'abord
+    //         FeedJAXB feedJaxb = Utils.convertXmlToFeed(feedXml) ;
+            
+
+
+    //         // convertir l'objet jaxb en feed entity
+    //         Feed feed = Utils.toFeedEntity(feedJaxb);
+    //         Long lastInsertedId = null;
+            
+            
+    //         List<Item> filteredItems = new ArrayList<>();
+    //         for (Item item : feed.getItems()) {
+    //             List<Item> existingItem = itemRepository.findByTitleAndPublished(item.getTitle(), item.getPublished());
+    //             if (existingItem.isEmpty()) {
+    //                 filteredItems.add(item);
+    //             }
+    //         }
+    //         feed.setItems(filteredItems);
+    //         Feed savedFeed = feedRepository.save(feed);
+    //         lastInsertedId = savedFeed.getId();
+    //         // //boucle sur les items du feed convertit
+    //         // for (Item item : feed.getItems()) {
+    //         //     //Optional<Item> existingItem = itemRepository.findByTitleAndPublished(item.getTitle(), item.getPublished());
+    //         //     List<Item> existingItem = itemRepository.findByTitleAndPublished(item.getTitle(), item.getPublished());
+    //         //     System.out.println("ITEM: "+ existingItem);
+    //         //     if (existingItem.isEmpty()) {
+    //         //         // Associer l’item au feed persisté
+    //         //         item.setFeed(savedFeed);
+    //         //         Item saved = itemRepository.save(item);
+    //         //         lastInsertedId = saved.getId();
+    //         //         System.out.println("HOT3: "+lastInsertedId);
+    //         //     }
+    //         // }
+    
+    //         if (lastInsertedId == null) {
+    //             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+    //                 .body("<rss25SB><status>ERROR</status><message>No new articles to insert</message></rss25SB>");
+    //         }
+    
+    //         String responseXml = "<rss25SB><status>INSERTED</status><id>" + lastInsertedId + "</id></rss25SB>";
+    //         return ResponseEntity.ok(responseXml);
+    
+    //     } catch (Exception e) {
+    //         e.printStackTrace();
+    //         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+    //             .body("<rss25SB><status>ERROR</status><message>" + e.getMessage() + "</message></rss25SB>");
+    //     }
     }
 }

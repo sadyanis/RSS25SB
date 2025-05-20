@@ -89,13 +89,7 @@ public class Item {
     public void setCategory(List<Category> category) {
         this.category = category;
     }
-    public List<Author> getContributors() {
-        return contributors;
-    }
-    public void setContributors(List<Author> contributors) {
-        this.contributors = contributors;
-    }
-
+    
     private String guid;
     private String title;
     
@@ -127,10 +121,6 @@ public class Item {
             inverseJoinColumns = @JoinColumn(name = "category_id"))
     private List<Category> category;
 
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "item_contributor",
-     joinColumns = @JoinColumn(name= "item_id"),
-    inverseJoinColumns = @JoinColumn(name= "contributor_id"))
-    private List<Author> contributors;
+
 }
 

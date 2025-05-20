@@ -1,16 +1,14 @@
 package fr.univrouen.rss25SB.entity;
 
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Lob;
+import jakarta.persistence.*;
 
 @Entity
 public class Content {
     @Id @GeneratedValue
     private Long id;
     @Lob
+    @Column(name= "content")
     private String content;
     private String type;
     public Long getId() {

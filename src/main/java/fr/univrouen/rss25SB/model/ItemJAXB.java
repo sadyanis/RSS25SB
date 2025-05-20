@@ -21,6 +21,8 @@ public class ItemJAXB {
     @XmlElement(name="published", namespace="http://univrouen.fr/rss25") 
     private String published;
 
+    @XmlElement(name="updated", namespace="http://univrouen.fr/rss25")
+    private String updated;
     @XmlElement(name="image",namespace="http://univrouen.fr/rss25")
     private ImageJAXB image;
 
@@ -30,10 +32,10 @@ public class ItemJAXB {
     public void setPublished(String published) {
         this.published = published;
     }
-    public List<ContributorJAXB> getContributor() {
+    public List<AuthorJAXB> getContributor() {
         return contributors;
     }
-    public void setContributor(List<ContributorJAXB> contributor) {
+    public void setContributor(List<AuthorJAXB> contributor) {
         this.contributors = contributor;
     }
 
@@ -45,7 +47,7 @@ public class ItemJAXB {
     private List<AuthorJAXB> authors;
 
     @XmlElement(name="contributor", namespace="http://univrouen.fr/rss25")
-    private List<ContributorJAXB> contributors;
+    private List<AuthorJAXB> contributors;
 
 
 
@@ -82,6 +84,12 @@ public class ItemJAXB {
     }
     public void setPubDate(String pubDate) {
         this.published = pubDate;
+    }
+    public String getUpdated() {
+        return updated;
+    }
+    public void setUpdated(String updated) {
+        this.updated = updated;
     }
     public ImageJAXB getImage() {
         return image;

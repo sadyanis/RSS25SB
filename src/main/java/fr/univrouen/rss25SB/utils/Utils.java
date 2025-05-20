@@ -17,18 +17,12 @@ import javax.xml.validation.Validator;
 import javax.xml.XMLConstants;
 import javax.xml.transform.*;
 
+import fr.univrouen.rss25SB.model.*;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.xml.sax.SAXException;
-
-import fr.univrouen.rss25SB.model.AuthorJAXB;
-import fr.univrouen.rss25SB.model.CategoryJAXB;
-import fr.univrouen.rss25SB.model.ContentJAXB;
-import fr.univrouen.rss25SB.model.FeedJAXB;
-import fr.univrouen.rss25SB.model.ImageJAXB;
-import fr.univrouen.rss25SB.model.ItemJAXB;
 
 import fr.univrouen.rss25SB.entity.Author;
 import fr.univrouen.rss25SB.entity.Content;
@@ -165,6 +159,14 @@ public class Utils {
             } catch (DateTimeParseException e) {
                 System.err.println("Erreur conversion date pubDate : " + e.getMessage());
             }
+        }else{
+            try{
+                LocalDateTime updated = LocalDateTime.parse(itemJaxb.getUpdated());
+                itemEntity.setUpdated(updated);
+
+            }catch(DateTimeParseException e){
+                System.err.println("Erreur conversion date updated : " + e.getMessage());
+            }
         }
 
         
@@ -174,10 +176,39 @@ public class Utils {
         }
 
         
-//        if (itemJaxb.getAuthor() != null) {
-//            Author authorEntity = toAuthorEntity(itemJaxb.getAuthor());
-//            itemEntity.setAuthor(authorEntity);
-//        }
+       if (itemJaxb.getAuthor() != null) {
+        // getAuthor() retourne une liste d'AuthorJAXB
+        List<Author> authors = new ArrayList<>();
+        for (AuthorJAXB authorJaxb : itemJaxb.getAuthor()) {
+            authors.add(toAuthorEntity(authorJaxb));
+        }
+        itemEntity.setAuthor(authors);
+       }
+
+       if (itemJaxb.getContributor() != null) {
+        // getContributor() retourne une liste d'ContributorJAXB
+        List<Author> contributors = new ArrayList<>();
+        for (AuthorJAXB contributorJaxb : itemJaxb.getContributor()) {
+            Author author = toAuthorEntity(contributorJaxb);
+            author.setRole(Role.CONTRIBUTOR);
+            contributors.add(author);           
+        }
+        itemEntity.setAuthor(contributors);
+       }
+
+       if (itemJaxb.getCategory() != null) {
+        // getCategory() retourne une liste de CategoryJAXB
+        List<Category> categories = new ArrayList<>();
+        for (CategoryJAXB categoryJaxb : itemJaxb.getCategory()) {
+            categories.add(toCategoryEntity(categoryJaxb));
+        }
+        itemEntity.setCategory(categories);
+       }
+       // Copier Image
+        if (itemJaxb.getImage() != null) {
+            Image imageEntity = toImageEntity(itemJaxb.getImage());
+            itemEntity.setImage(imageEntity);
+        }
 
         /*
         
@@ -191,11 +222,7 @@ public class Utils {
         //     itemEntity.setAuthor(contributorEntity);
         // } */
 
-        // Copier Image
-        if (itemJaxb.getImage() != null) {
-            Image imageEntity = toImageEntity(itemJaxb.getImage());
-            itemEntity.setImage(imageEntity);
-        }
+        
 
         // Copier Category
 //        if (itemJaxb.getCategory() != null) {

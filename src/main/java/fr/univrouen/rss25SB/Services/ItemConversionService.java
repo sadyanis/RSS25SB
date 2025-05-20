@@ -4,6 +4,7 @@ import fr.univrouen.rss25SB.entity.*;
 import fr.univrouen.rss25SB.model.*;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,17 +24,28 @@ public class ItemConversionService {
                 .collect(Collectors.toList());
         itemJAXB.setCategory(categoryJAXBs);
 
+// verification du role de l'auteur si Role = CONTRIBUTOR  create ContributorJAXB
+// sinon create AuthorJAXB
 
-        List<AuthorJAXB> authorJAXBs = item.getAuthor().stream()
-                .map(ItemConversionService::convertAuthorToJAXB)
-                .collect(Collectors.toList());
-        itemJAXB.setAuthor(authorJAXBs);
+     List<AuthorJAXB> authorsJAXB = new ArrayList<>();
+     List<AuthorJAXB> contributorsJAXB = new ArrayList<>();
+      
+      for (Author author : item.getAuthor()) {
+         if (author.getRole() == Role.AUTHOR) {
+            authorsJAXB.add(convertAuthorToJAXB(author));
+         } else {
+            contributorsJAXB.add(convertAuthorToJAXB(author));
+         }
+      }
+      itemJAXB.setAuthor(authorsJAXB);
+      itemJAXB.setContributor(contributorsJAXB);
 
-        // Contributors
-        List<ContributorJAXB> contributorJAXBs = item.getContributors().stream()
-                .map(ItemConversionService::convertContributorToJAXB)
-                .collect(Collectors.toList());
-        itemJAXB.setContributor(contributorJAXBs);
+     //    List<AuthorJAXB> authorJAXBs = item.getAuthor().stream()
+     //            .map(ItemConversionService::convertAuthorToJAXB)
+     //            .collect(Collectors.toList());
+     //    itemJAXB.setAuthor(authorJAXBs);
+
+       
 
         // Image & Content
         itemJAXB.setImage(convertImageToJAXB(item.getImage()));
@@ -53,7 +65,7 @@ public class ItemConversionService {
     public static AuthorJAXB convertAuthorToJAXB( Author author){
          return new AuthorJAXB(author.getName(),author.getEmail(),author.getUri());
     }
-    public static ContributorJAXB convertContributorToJAXB(Author author){
-         return new ContributorJAXB(author.getName(),author.getEmail(),author.getUri());
-    }
+//     public static ContributorJAXB convertContributorToJAXB(Author author){
+//          return new ContributorJAXB(author.getName(),author.getEmail(),author.getUri());
+//     }
 }
