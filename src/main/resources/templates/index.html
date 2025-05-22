@@ -1,45 +1,64 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" >
-<head>
-  <meta charset="UTF-8">
-  <title>RSS25</title>
-    <link rel="stylesheet" href="/Style/Accueil.css">
-</head>
-<body>
-<!--<header>-->
-<!--  <img src="/Images/logo-univ-rouen-normandie-couleur.png" alt="logo Univ Rouen"  >-->
-<!--</header>-->
-<nav>
-  <ul>
-    <li><a href="/" th:href="@{/}" >Home</a></li>
-    <li><a href="/help" th:href="@{/help}" >Help</a></li>
-    <li><a href="/rss25SB/resume/html" th:href="@{/rss25SB/resume/html}" >Articles (HTML)</a></li>
-    <li><a href="/rss25SB/resume/xml" th:href="@{/rss25SB/resume/xml}" >Articles (XML)</a></li>
-  </ul>
-</nav>
-<h1 >rss25SB REST API</h1>
-<div class="container">
-  <section class="info">
-    <p><strong>Version :</strong> <span >1.0</span></p>
-    <p><strong>Développeur :</strong> <span >SADOUN YANIS & MESSAD MOULOUD</span></p>
-    <img src="/Images/logo-univ-rouen-normandie-couleur.png" alt="Logo Université de Rouen" />
-  </section>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <title>RSS25</title>
+    <link rel="stylesheet" href="/Style/Accueil.css" />
+  </head>
+  <body>
+    <!--<header>-->
+    <!--  <img src="/Images/logo-univ-rouen-normandie-couleur.png" alt="logo Univ Rouen"  >-->
+    <!--</header>-->
+    <nav>
+      <ul>
+        <li><a href="/" th:href="@{/}">Home</a></li>
+        <li><a href="/help" th:href="@{/help}">Help</a></li>
+        <li>
+          <a href="/rss25SB/resume/html" th:href="@{/rss25SB/resume/html}"
+            >Articles (HTML)</a
+          >
+        </li>
+        <li>
+          <a href="/rss25SB/resume/xml" th:href="@{/rss25SB/resume/xml}"
+            >Articles (XML)</a
+          >
+        </li>
+        <li>
+          <a th:href="@{/transfert}">Transférer un fichier</a>
+        </li>
+      </ul>
+    </nav>
+    <h1>rss25SB REST API</h1>
+    <div class="container">
+      <section class="info">
+        <p><strong>Version :</strong> <span>1.0</span></p>
+        <p>
+          <strong>Développeur :</strong>
+          <span>SADOUN YANIS & MESSAD MOULOUD</span>
+        </p>
+        <img
+          src="/Images/logo-univ-rouen-normandie-couleur.png"
+          alt="Logo Université de Rouen"
+        />
+      </section>
 
-  <section class="description">
-    <h2>Bienvenue !</h2>
-    <p>
-      Ce service REST permet de gérer des flux RSS personnalisés appelés <code>rss25SB</code>.
-    </p>
-    <p>
-      Consultez les articles, ajoutez de nouveaux flux ou explorez la documentation via le menu ci-dessus.
-    </p>
-  </section>
-</div>
+      <section class="description">
+        <h2>Bienvenue !</h2>
+        <p>
+          Ce service REST permet de gérer des flux RSS personnalisés appelés
+          <code>rss25SB</code>.
+        </p>
+        <p>
+          Consultez les articles, ajoutez de nouveaux flux ou explorez la
+          documentation via le menu ci-dessus.
+        </p>
+      </section>
+    </div>
 
-<footer>
-  <div class="container">
-    <p>&copy; 2025 - Université de Rouen - Projet XML M1 GIL</p>
-  </div>
-</footer>
-</body>
+    <footer>
+      <div class="container">
+        <p>&copy; 2025 - Université de Rouen - Projet XML M1 GIL</p>
+      </div>
+    </footer>
+  </body>
 </html>

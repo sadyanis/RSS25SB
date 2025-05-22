@@ -14,7 +14,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -122,5 +124,23 @@ public class PostController {
     //         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
     //             .body("<rss25SB><status>ERROR</status><message>" + e.getMessage() + "</message></rss25SB>");
     //     }
+    }
+
+    @PostMapping(value = "/rss25SB/insertFile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_XML_VALUE)
+    public ResponseEntity<String> insertFromFile(@RequestParam("file") MultipartFile file) {
+        try {
+            // lire le contenu du fichier XML en String
+            String xml = new String(file.getBytes(), StandardCharsets.UTF_8);
+
+            // appeler ta méthode d'insertion
+            String response = rss25Service.insertFeedFromXml(xml);
+
+            HttpStatus status = response.contains("<status>ERROR</status>") ? HttpStatus.BAD_REQUEST : HttpStatus.OK;
+            return ResponseEntity.status(status).body(response);
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("<rss25SB><status>ERROR</status><message>" + e.getMessage() + "</message></rss25SB>");
+        }
     }
 }

@@ -11,22 +11,28 @@ import java.util.List;
 
 @Controller
 public class StdController {
-@Autowired
-private ItemRepository ItemRepository;
-@GetMapping("/")
-    public String index(Model model) {
-    model.addAttribute("title", "Accueil");
-    return "index";
-}
-@GetMapping("/help")
-    public String help(Model model) {
-    return "help";
-}
-@GetMapping("/rss25SB/resume/html")
-    public String resume(Model model) {
-    List<Item> items = ItemRepository.findAll();
-    model.addAttribute("items", items);
+    @Autowired
+    private ItemRepository ItemRepository;
+    @GetMapping("/")
+        public String index(Model model) {
+        model.addAttribute("title", "Accueil");
+        return "index";
+    }
+    @GetMapping("/help")
+        public String help(Model model) {
+        return "help";
+    }
+    @GetMapping("/rss25SB/resume/html")
+        public String resume(Model model) {
+        List<Item> items = ItemRepository.findAll();
+        model.addAttribute("items", items);
 
-    return "resumeHtml";
-}
+        return "resumeHtml";
+    }
+
+    // Aller vers la page de transfert
+    @GetMapping("/transfert")
+    public String transfert(){
+        return "transfert";
+    }
 }
