@@ -180,7 +180,9 @@ public class Utils {
         // getAuthor() retourne une liste d'AuthorJAXB
         List<Author> authors = new ArrayList<>();
         for (AuthorJAXB authorJaxb : itemJaxb.getAuthor()) {
-            authors.add(toAuthorEntity(authorJaxb));
+            Author author = toAuthorEntity(authorJaxb);
+            author.setRole(Role.AUTHOR);
+            authors.add(author);
         }
         itemEntity.setAuthor(authors);
        }
