@@ -24,25 +24,23 @@
 <body>
 <h1>Liste des Items RSS</h1>
 
-<table>
+<table >
     <thead>
     <tr>
-        <th>ID</th>
         <th>Titre</th>
         <th>GUID</th>
-        <th>Date de publication</th>
-        <th>Auteur</th>
-        <th>Catégorie</th>
+        <th>Date</th>
+        <th>URL</th>
     </tr>
     </thead>
     <tbody>
     <tr th:each="item : ${items}">
-        <td th:text="${item.id}"></td>
-        <td th:text="${item.title}"></td>
-        <td th:text="${item.guid}"></td>
-        <td th:text="${item.published}"></td>
-        <td th:text="${item.author?.getName()}"></td>
-        <td th:text="${item.category?.getTerm()}"></td>
+        <td th:text="${item.title}">Titre</td>
+        <td th:text="${item.guid}">GUID</td>
+        <td th:text="${item.published != null ? item.published : item.updated}">Date</td>
+        <td>
+            <a th:href="@{/rss25SB/item/{id}(id=${item.id})}">Voir</a>
+        </td>
     </tr>
     </tbody>
 </table>
