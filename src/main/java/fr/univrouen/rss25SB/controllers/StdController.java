@@ -56,12 +56,12 @@ public String getItemById(@PathVariable Long id, Model model) {
     }
 
     // Aller vers la page de conversion
-    @GetMapping("/convert")
-    public String convert(){
-        return "convert";
-    }
+   
 }
-
+@GetMapping("/convert")
+public String convert(){
+    return "convert";
+}
 
 }
 
