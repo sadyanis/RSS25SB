@@ -17,12 +17,12 @@
     </p>
 
     <p><strong>Catégories :</strong>
-        <span th:each="cat : ${item.category}" th:text="${cat.name} + ' '" />
+        <span th:each="cat : ${item.category}" th:text="${cat.term} + ' '" />
     </p>
 
     <p><strong>Image :</strong></p>
     <div th:if="${item.image != null}">
-        <img th:src="${item.image.url}" alt="image" />
+        <img th:src="${item.image.href}" th:alt="${item.image.alt}" />
     </div>
 </body>
 </html>
