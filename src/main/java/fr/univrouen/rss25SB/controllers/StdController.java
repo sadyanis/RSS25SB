@@ -54,6 +54,12 @@ public String getItemById(@PathVariable Long id, Model model) {
         model.addAttribute("status", "ERROR");
         return "item-error";
     }
+
+    // Aller vers la page de conversion
+    @GetMapping("/convert")
+    public String convert(){
+        return "convert";
+    }
 }
 
 

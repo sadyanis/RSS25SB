@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <title>Convertisseur RSS</title>
+    <link rel="stylesheet" href="/Style/Accueil.css" />
+  </head>
+  <body>
+    <nav>
+      <ul>
+        <li><a href="/" th:href="@{/}">Home</a></li>
+        <li><a href="/help" th:href="@{/help}">Help</a></li>
+        <li>
+          <a href="/rss25SB/resume/html" th:href="@{/rss25SB/resume/html}"
+            >Articles (HTML)</a
+          >
+        </li>
+        <li>
+          <a href="/rss25SB/resume/xml" th:href="@{/rss25SB/resume/xml}"
+            >Articles (XML)</a
+          >
+        </li>
+        <li>
+          <a th:href="@{/transfert}">Transférer un fichier</a>
+        </li>
+
+        <li>
+          <a th:href="@{/convert}">Convertir un fichier</a>
+        </li>
+      </ul>
+    </nav>
+    <h1>Convertir un fichier RSS (Le Monde) en RSS25SB</h1>
+    <form method="post" enctype="multipart/form-data" action="/convert">
+      <input type="file" name="file" accept=".xml" required />
+      <button type="submit">Convertir et Télécharger</button>
+    </form>
+  </body>
+</html>

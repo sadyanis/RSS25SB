@@ -10,17 +10,38 @@ import fr.univrouen.rss25SB.utils.Utils;
 
 import org.hibernate.cache.spi.support.CacheUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.boot.context.properties.PropertyMapper.Source;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayOutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
+
+
+
+import org.springframework.http.HttpHeaders;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import javax.xml.transform.*;
+import java.io.*;
+
+
 
 @RestController
 public class PostController {
@@ -142,5 +163,26 @@ public class PostController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("<rss25SB><status>ERROR</status><message>" + e.getMessage() + "</message></rss25SB>");
         }
+    }
+
+
+    // III.2
+    @PostMapping("/convert")
+    public ResponseEntity<byte[]> convertXml(@RequestParam("file") MultipartFile file) throws Exception {
+        Source xslt = new StreamSource(new ClassPathResource("xslt/convert.xslt").getInputStream());
+
+        Source xmlInput = new StreamSource(file.getInputStream());
+
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        Result output = new StreamResult(outputStream);
+
+        TransformerFactory factory = TransformerFactory.newInstance();
+        Transformer transformer = factory.newTransformer(xslt);
+        transformer.transform(xmlInput, output);
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"converted_rss25SB.xml\"")
+                .contentType(MediaType.APPLICATION_XML)
+                .body(outputStream.toByteArray());
     }
 }
