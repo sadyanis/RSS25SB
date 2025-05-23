@@ -22,50 +22,42 @@ public class StdController {
         return "index";
     }
 
-    @GetMapping("/help")
-    public String help(Model model) {
-        return "help";
-    }
-
     @GetMapping("/rss25SB/resume/html")
     public String resume(Model model) {
         List<Item> items = ItemRepository.findAll();
         model.addAttribute("items", items);
-    @Autowired
-    private ItemRepository ItemRepository;
-    @GetMapping("/")
-        public String index(Model model) {
-        model.addAttribute("title", "Accueil");
-        return "index";
+        return "resumeHtml";
     }
+  
     @GetMapping("/help")
         public String help(Model model) {
         return "help";
     }
-    @GetMapping("/rss25SB/resume/html")
-        public String resume(Model model) {
-        List<Item> items = ItemRepository.findAll();
-        model.addAttribute("items", items);
+    
 
-        return "resumeHtml";
-    }
+   
+     // Aller vers la page de transfert
+     @GetMapping("/transfert")
+     public String transfert(){
+         return "transfert";
+     }
 
-    @GetMapping("/rss25SB/html/{id}")
-    public String article(Model model, @PathVariable Long id) {
-        Optional<Item> optionalItem = ItemRepository.findById(id);
-        if (optionalItem.isPresent()) {
-            model.addAttribute("item", optionalItem.get());
-            return "articleHtml";
-        } else {
-            return "itemNotFound"; // Crée une vue "itemNotFound.html" pour gérer l'erreur proprement
-        }
-    }
-        return "resumeHtml";
-    }
+     @GetMapping("/rss25SB/html/{id}")
+public String getItemById(@PathVariable Long id, Model model) {
+    Optional<Item> itemOptional = ItemRepository.findById(id);
 
-    // Aller vers la page de transfert
-    @GetMapping("/transfert")
-    public String transfert(){
-        return "transfert";
+    if (itemOptional.isPresent()) {
+        model.addAttribute("item", itemOptional.get());
+        return "articleHtml";
+    } else {
+        model.addAttribute("id", id);
+        model.addAttribute("status", "ERROR");
+        return "item-error";
     }
 }
+
+
+}
+
+   
+

@@ -116,6 +116,16 @@ public class ItemJAXB {
 
     @Override
     public String toString() {
-        return ("Article : "+ title + "\n(" + guid + ") Le =  "+published + category +  "\n");
+        return "ItemJAXB{" +
+                "guid='" + guid + '\'' +
+                ", title='" + title + '\'' +
+                ", category=" + category +
+                ", published=" + published +
+                ", updated=" + updated +
+                ", image=" + image +
+                ", content=" + content +
+                ", authors=" + authors +
+                ", contributors=" + contributors +
+                '}';
     }
 }

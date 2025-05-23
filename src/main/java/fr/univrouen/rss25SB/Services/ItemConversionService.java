@@ -16,7 +16,15 @@ public class ItemConversionService {
 
         itemJAXB.setGuid(item.getGuid());
         itemJAXB.setTitle(item.getTitle());
-        itemJAXB.setPublished(item.getPublished().toString());
+        // getPublished() peut etre null
+        if (item.getUpdated() != null) {
+            itemJAXB.setUpdated(item.getUpdated().toString());
+        }
+        if (item.getPublished() != null) {
+            itemJAXB.setPublished(item.getPublished().toString());
+          
+        }
+        
 
         // Categories
         List<CategoryJAXB> categoryJAXBs = item.getCategory().stream()
@@ -48,7 +56,13 @@ public class ItemConversionService {
        
 
         // Image & Content
-        itemJAXB.setImage(convertImageToJAXB(item.getImage()));
+        // image peut etre null
+
+            if (item.getImage() != null) {
+               ImageJAXB imageJAXB = convertImageToJAXB(item.getImage());
+               itemJAXB.setImage(imageJAXB);
+            } 
+        
         itemJAXB.setContent(convertContentToJAXB(item.getContent()));
 
         return itemJAXB;
@@ -60,10 +74,29 @@ public class ItemConversionService {
          return new ContentJAXB(content.getType(),content.getContent());
     }
     public static ImageJAXB convertImageToJAXB(Image image){
-         return new ImageJAXB(image.getType(),image.getHref(), image.getAlt(), image.getLength());
-    }
+           // image.getLength() peut etre null
+         //return new ImageJAXB(image.getType(),image.getHref(), image.getAlt(), image.getLength());
+           ImageJAXB imageJAXB = new ImageJAXB();
+               imageJAXB.setType(image.getType());
+               imageJAXB.setHref(image.getHref());
+               imageJAXB.setAlt(image.getAlt());
+               if(image.getLength() != null){
+                   imageJAXB.setLength(image.getLength());
+               }
+               return imageJAXB;
+     }
     public static AuthorJAXB convertAuthorToJAXB( Author author){
-         return new AuthorJAXB(author.getName(),author.getEmail(),author.getUri());
+          // email et uri peuvent etre null
+         AuthorJAXB authorJAXB = new AuthorJAXB();
+           authorJAXB.setName(author.getName());
+           if( author.getEmail() != null){
+               authorJAXB.setEmail(author.getEmail());
+           }
+          if(author.getUri() != null){
+                    authorJAXB.setUri(author.getUri());
+          }
+          return authorJAXB;
+
     }
 //     public static ContributorJAXB convertContributorToJAXB(Author author){
 //          return new ContributorJAXB(author.getName(),author.getEmail(),author.getUri());

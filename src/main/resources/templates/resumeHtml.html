@@ -30,16 +30,18 @@
         <th>Titre</th>
         <th>GUID</th>
         <th>Date</th>
-        <th>URL</th>
+        
     </tr>
     </thead>
     <tbody>
     <tr th:each="item : ${items}">
         <td th:text="${item.title}">Titre</td>
-        <td th:text="${item.guid}">GUID</td>
+        <td>
+            <a th:href="${item.guid}" th:text="${item.guid}"></a>
+        </td>
         <td th:text="${item.published != null ? item.published : item.updated}">Date</td>
         <td>
-            <a th:href="@{/rss25SB/item/{id}(id=${item.id})}">Voir</a>
+           
         </td>
     </tr>
     </tbody>
