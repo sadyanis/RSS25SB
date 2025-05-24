@@ -10,14 +10,14 @@
         <span th:text="${item.published != null ? item.published : item.updated}"></span>
     </p>
     <p><strong>Contenu :</strong></p>
-    <div th:utext="${item.content != null ? item.content.content : 'Pas de contenu'}"></div>
+    <div class="content-block" th:utext="${item.content != null ? item.content.content : 'Pas de contenu'}"></div>
 
     <p><strong>Auteurs :</strong>
-        <span th:each="author : ${item.author}" th:text="${author.name} + ' '" />
+        <span class="author" th:each="author : ${item.author}" th:text="${author.name} + ' '" />
     </p>
 
     <p><strong>Catégories :</strong>
-        <span th:each="cat : ${item.category}" th:text="${cat.term} + ' '" />
+        <span class="category" th:each="cat : ${item.category}" th:text="${cat.term} + ' '" />
     </p>
 
     <p><strong>Image :</strong></p>

@@ -2,10 +2,13 @@ package fr.univrouen.rss25SB.controllers;
 
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.util.List;
 import java.util.Optional;
 
 
 import fr.univrouen.rss25SB.Services.ItemConversionService;
+import fr.univrouen.rss25SB.model.ItemSummary;
+import fr.univrouen.rss25SB.model.ItemsSummaryJAXB;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.InputStreamResource;
@@ -44,8 +47,18 @@ public class GetController {
         return  "Test : \n guid = "+nb+"\n search = "+texte;
     }
     @GetMapping(value = "/rss25SB/resume/xml",produces = MediaType.APPLICATION_XML_VALUE)
-    public String getRSSinXML(){
-    return "<result><response>Message reçu:</response>";
+    public ResponseEntity<ItemsSummaryJAXB> getRSSinXML(){
+    List<Item> items = itemRepository.findAll();
+
+        List<ItemSummary> summaries = items.stream()
+                .map(item -> new ItemSummary(
+                        item.getGuid(),item.getId().intValue(),
+                        item.getPublished() != null ? item.getPublished().toString()
+                                : (item.getUpdated() != null ? item.getUpdated().toString() : "N/A")
+
+                ))
+                .toList();
+        return ResponseEntity.ok(new ItemsSummaryJAXB(summaries));
     }
 //    @GetMapping(value="/rss25SB/resume/xml")
 //    public String get

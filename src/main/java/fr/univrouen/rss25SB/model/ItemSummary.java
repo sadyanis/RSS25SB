@@ -1,71 +1,64 @@
-//package fr.univrouen.rss25SB.model;
-//
-//import jakarta.xml.bind.annotation.XmlAccessType;
-//import jakarta.xml.bind.annotation.XmlAccessorType;
-//import jakarta.xml.bind.annotation.XmlElement;
-//import jakarta.xml.bind.annotation.XmlRootElement;
-//
-//import java.util.Date;
-//
-//@XmlRootElement(name="item")
-//@XmlAccessorType(XmlAccessType.PROPERTY)
-//public class ItemSummary {
-//    @XmlElement
-//    private int id;
-//    @XmlElement
-//    private Date pubDate;
-//    @XmlElement
-//    private String guid;
-//
-//    public ItemSummary(int id, String guid, Date pubDate) {
-//        super();
-//        this.id = id;
-//        this.guid = guid;
-//        this.pubDate = pubDate;
-//
-//    }
-//
-//
-//
-//
-//    @Override
-//    public String toString() {
-//        return ("Article : "+ guid + "\n(" + id + ") Le =  "+pubDate + "\n");
-//    }
-//
-//}
+
 
 package fr.univrouen.rss25SB.model;
 
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlElement;
 
-import jakarta.xml.bind.annotation.*;
 
-import java.util.Date;
 
-@XmlRootElement(name="item")
-@XmlAccessorType(XmlAccessType.PROPERTY)
-public class ItemSummary  {
-    @XmlElement
+@XmlAccessorType(XmlAccessType.FIELD)
+public class ItemSummary {
+    @XmlElement(namespace="http://univrouen.fr/rss25")
     private int id;
-    @XmlElement
+    @XmlElement(namespace="http://univrouen.fr/rss25")
     private String guid;
-    @XmlElement
-    private String pubDate;
+    @XmlElement(namespace="http://univrouen.fr/rss25")
+    private String date;
 
-    public ItemSummary (String guid, int id, String published) {
-        super();
+    public ItemSummary() {
+
+    }
+
+    public ItemSummary(String guid, int id, String date) {
         this.guid = guid;
         this.id = id;
-        this.pubDate = published;
-    }
-    public ItemSummary (){
-
+        this.date = date;
     }
 
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+
+    public String getGuid() {
+        return guid;
+    }
+
+    public void setGuid(String guid) {
+        this.guid = guid;
+    }
+
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
 
     @Override
     public String toString() {
-        return ("Article : "+ id + "\n(" + guid + ") Le =  "+pubDate + "\n");
+        return "Article : " + id + " (" + guid + ") Le = " + date;
     }
 }
+
 
