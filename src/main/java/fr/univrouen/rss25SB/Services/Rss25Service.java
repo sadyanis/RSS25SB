@@ -2,14 +2,22 @@ package fr.univrouen.rss25SB.Services;
 
 import fr.univrouen.rss25SB.entity.*;
 import fr.univrouen.rss25SB.model.FeedJAXB;
+import fr.univrouen.rss25SB.model.ItemJAXB;
+import fr.univrouen.rss25SB.model.ItemSummary;
+import fr.univrouen.rss25SB.model.ItemsSummaryJAXB;
 import fr.univrouen.rss25SB.repository.*;
 import fr.univrouen.rss25SB.utils.Utils;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -19,6 +27,7 @@ public class Rss25Service {
     private final CategoryRepository categoryRep;
     private final AuthorRepository authorRep;
     private final ImageRepository imageRep;
+
 
     public Rss25Service(FeedRepository feedRep, ItemRepository itemRep,
                        CategoryRepository categoryRep, AuthorRepository authorRep,
@@ -74,4 +83,68 @@ public class Rss25Service {
         Feed feedSaved = feedRep.save(feed);
         return "<rss25SB><status>INSERTED</status><feedId>" + feedSaved.getId() + "</feedId></rss25SB>";
     }
+
+    public ResponseEntity<ItemsSummaryJAXB> getRSSinXML() {
+        List<Item> items = itemRep.findAll();
+        //filtrer la liste des items pour ne garder que ceux qui ont un guid
+        items = items.stream()
+                .filter(item -> item.getGuid() != null)
+                .toList(); 
+
+        List<ItemSummary> summaries = items.stream()
+                .map(item -> new ItemSummary(
+                        item.getGuid(), item.getId(),
+                        item.getPublished() != null ? item.getPublished().toString() : (item.getUpdated() != null ? item.getUpdated().toString() : "N/A")
+
+                ))
+                .toList();
+        return ResponseEntity.ok(new ItemsSummaryJAXB(summaries));
+    }
+
+    public ResponseEntity<Object> getRSSinXMLById( long id) {
+        Optional<Item> itemOpt = itemRep.findById(id);
+
+        if (itemOpt.isPresent()) {
+            Item item = itemOpt.get();
+            ItemJAXB itemJAXB = ItemConversionService.toJAXB(item); //convertir le Item au format XMl
+            return ResponseEntity.ok(itemJAXB);
+        } else {
+            // Générer une réponse XML d'erreur
+            String errorXml = "<error><id>" + id + "</id><status>ERROR</status></error>";
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorXml);
+
+        }
+
+    }
+
+    public ResponseEntity<Map<String, String>> deleteArticle( Long id) {
+        Optional<Item> itemOpt = itemRep.findById(id);
+
+        if (itemOpt.isEmpty()) {
+            return ResponseEntity.ok(Map.of("status", "ERROR"));
+        }
+
+        Item item = itemOpt.get();
+        Feed feed = item.getFeed();
+
+        itemRep.deleteById(id);
+
+        // Vérifier si le feed est vide après suppression
+        if (feed != null && feed.getItems().isEmpty()) {
+            feedRep.deleteById(feed.getId());
+        }
+
+        return ResponseEntity.ok(Map.of(
+                "id", String.valueOf(id),
+                "status", "DELETED"
+        ));
+    }
+
+    public Optional<Item> getItemById(Long id) {
+        return itemRep.findById(id);
+    }
+    public List<Item> getAllItems() {
+        return itemRep.findAll();
+    }
+
 }

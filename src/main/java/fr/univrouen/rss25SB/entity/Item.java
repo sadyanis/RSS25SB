@@ -7,7 +7,8 @@ import jakarta.persistence.*;
 
 @Entity
 public class Item {
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue
     private Long id;
 
     public Long getId() {

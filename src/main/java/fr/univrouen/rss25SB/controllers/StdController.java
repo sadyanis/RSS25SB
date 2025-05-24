@@ -1,5 +1,6 @@
 package fr.univrouen.rss25SB.controllers;
 
+import fr.univrouen.rss25SB.Services.Rss25Service;
 import fr.univrouen.rss25SB.entity.Item;
 import fr.univrouen.rss25SB.repository.ItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +15,9 @@ import java.util.Optional;
 
 @Controller
 public class StdController {
+
     @Autowired
-    private ItemRepository ItemRepository;
+    private Rss25Service rss25Service;
 
     @GetMapping("/")
     public String index(Model model) {
@@ -25,10 +27,12 @@ public class StdController {
 
     @GetMapping("/rss25SB/resume/html")
     public String resume(Model model) {
-        List<Item> items = ItemRepository.findAll();
-        // Log de debug pour voir ce qui est récupéré
+        List<Item> items = rss25Service.getAllItems();
+        List<Item> valids = items.stream()
+                .filter(item -> item.getGuid() != null )
+                .toList();
 
-        model.addAttribute("items", items);
+        model.addAttribute("items", valids);
         return "resumeHtml";
     }
 
@@ -79,6 +83,11 @@ public class StdController {
                         "url", "/convert",
                         "method", "GET",
                         "summary", "Permet de convertir un fichier XML en HTML ou en résumé"
+                ),
+                Map.of(
+                        "url", "/rss25SB/delete/{id}",
+                        "method", "DELETE",
+                        "summary", "Supprime un item graace a son id dans la base de données"
                 )
         );
 
@@ -96,7 +105,7 @@ public class StdController {
 
      @GetMapping("/rss25SB/html/{id}")
 public String getItemById(@PathVariable Long id, Model model) {
-    Optional<Item> itemOptional = ItemRepository.findById(id);
+    Optional<Item> itemOptional = rss25Service.getItemById(id);
 
     if (itemOptional.isPresent()) {
         model.addAttribute("item", itemOptional.get());
