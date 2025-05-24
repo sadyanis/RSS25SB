@@ -7,7 +7,8 @@ import jakarta.persistence.*;
 
 @Entity
 public class Item {
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     public Long getId() {

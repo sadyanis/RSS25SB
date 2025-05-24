@@ -7,6 +7,7 @@ import java.util.Optional;
 
 
 import fr.univrouen.rss25SB.Services.ItemConversionService;
+import fr.univrouen.rss25SB.Services.Rss25Service;
 import fr.univrouen.rss25SB.model.ItemSummary;
 import fr.univrouen.rss25SB.model.ItemsSummaryJAXB;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +33,8 @@ public class GetController {
 
     @Autowired
     ItemRepository itemRepository;
-    
+    @Autowired
+    Rss25Service rss25SBService;
 
     @GetMapping("/resume")
     public String getListRssinXML(){
@@ -46,80 +48,8 @@ public class GetController {
     public String test(@RequestParam(value = "nb") Integer nb , @RequestParam(value = "search") String texte ){
         return  "Test : \n guid = "+nb+"\n search = "+texte;
     }
-    @GetMapping(value = "/rss25SB/resume/xml",produces = MediaType.APPLICATION_XML_VALUE)
-    public ResponseEntity<ItemsSummaryJAXB> getRSSinXML(){
-    List<Item> items = itemRepository.findAll();
-
-        List<ItemSummary> summaries = items.stream()
-                .map(item -> new ItemSummary(
-                        item.getGuid(),item.getId(),
-                        item.getPublished() != null ? item.getPublished().toString() : (item.getUpdated() != null ? item.getUpdated().toString() : "N/A")
-
-                ))
-                .toList();
-        return ResponseEntity.ok(new ItemsSummaryJAXB(summaries));
-    }
-//    @GetMapping(value="/rss25SB/resume/xml")
-//    public String get
-
-    // QUESTION 1.4.1
-    // @GetMapping(value = "/rss25SB/resume/xml/{id}",produces = MediaType.APPLICATION_XML_VALUE)
-    // public ResponseEntity<String> getRSSinXMLById(@PathVariable long id){
-
-    //     Optional<Item> itemOpt = itemRepository.findById(id); // on est cense recuperer un objet de type Item
-
-    //     if (itemOpt.isPresent()) {
-    //         Item item = itemOpt.get();
-    //         String xml = Utils.convertItemToXml(item); //convertir le Item au format XMl
-    //         return ResponseEntity.ok(xml);
-    //     } else {
-    //         // Générer une réponse XML d'erreur
-    //         String errorXml = "<error><id>" + id + "</id><status>ERROR</status></error>";
-    //         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorXml);
-    //     }
-    // }
 
 
-//    // QUESTION 1.4.2
-//    @GetMapping(value = "/rss25SB/html/{id}", produces = MediaType.TEXT_HTML_VALUE)
-//    public ResponseEntity<String> getItemAsHtmlById(@PathVariable long id) {
-//    Optional<Item> optionalItem = itemRepository.findById(id);
-//
-//    if (optionalItem.isEmpty()) {
-//
-//        String errorHtml = "<html><body><h1>Erreur</h1><p>Identifiant : " + id + "</p><p>Status : ERROR</p></body></html>";
-//        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorHtml);
-//    }
-//
-//    try {
-//        String itemXml = Utils.convertItemToXml(optionalItem.get()); //recuperer le xml
-//
-//
-//        return ResponseEntity.ok(Utils.convertItemToHtml(itemXml));
-//
-//    } catch (Exception e) {
-//        e.printStackTrace();
-//        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-//                .body("<html><body><h1>Erreur serveur</h1><p>" + e.getMessage() + "</p></body></html>");
-//    }
-
-    //1.5.1
-//}
-
-@GetMapping(value = "/rss25SB/resume/xml/{id}",produces = MediaType.APPLICATION_XML_VALUE)
-     public ResponseEntity<Object> getRSSinXMLById(@PathVariable long id){
-    Optional<Item> itemOpt = itemRepository.findById(id); // on est cense recuperer un objet de type Item
-
-    if (itemOpt.isPresent()) {
-        Item item = itemOpt.get();
-        ItemJAXB itemJAXB = ItemConversionService.toJAXB(item); //convertir le Item au format XMl
-        return ResponseEntity.ok(itemJAXB);
-     }else {
-        // Générer une réponse XML d'erreur
-        String errorXml = "<error><id>" + id + "</id><status>ERROR</status></error>";
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorXml);
 
 
-}
-     }
     }
