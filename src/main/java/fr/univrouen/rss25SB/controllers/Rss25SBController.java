@@ -29,7 +29,7 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
 @RestController
-@RequestMapping("/rss25SB")
+@RequestMapping("/")
 public class Rss25SBController {
 
 

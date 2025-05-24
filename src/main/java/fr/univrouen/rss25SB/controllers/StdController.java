@@ -83,6 +83,11 @@ public class StdController {
                         "url", "/convert",
                         "method", "GET",
                         "summary", "Permet de convertir un fichier XML en HTML ou en résumé"
+                ),
+                Map.of(
+                        "url", "/rss25SB/delete/{id}",
+                        "method", "DELETE",
+                        "summary", "Supprime un item graace a son id dans la base de données"
                 )
         );
 
