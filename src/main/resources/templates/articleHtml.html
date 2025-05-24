@@ -2,8 +2,34 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Détail de l'article</title>
+    <link rel="stylesheet" href="/Style/articleStyl.css"/>
+    <link rel="stylesheet" href="/Style/Accueil.css" />
 </head>
 <body>
+<nav>
+    <ul>
+        <li><a href="/" th:href="@{/}">Home</a></li>
+        <li><a href="/help" th:href="@{/help}">Help</a></li>
+        <li>
+            <a href="/rss25SB/resume/html" th:href="@{/rss25SB/resume/html}"
+            >Articles (HTML)</a
+            >
+        </li>
+        <li>
+            <a href="/rss25SB/resume/xml" th:href="@{/rss25SB/resume/xml}"
+            >Articles (XML)</a
+            >
+        </li>
+
+        <li>
+            <a th:href="@{/transfert}">Transférer un fichier</a>
+        </li>
+
+        <li>
+            <a th:href="@{/convert}">Convertir un fichier</a>
+        </li>
+    </ul>
+</nav>
     <h1 th:text="${item.title}">Titre</h1>
     <p><strong>GUID :</strong> <span th:text="${item.guid}"></span></p>
     <p><strong>Date :</strong>

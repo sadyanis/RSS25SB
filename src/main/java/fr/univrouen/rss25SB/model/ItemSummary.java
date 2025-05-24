@@ -12,7 +12,7 @@ import jakarta.xml.bind.annotation.XmlElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ItemSummary {
     @XmlElement(namespace="http://univrouen.fr/rss25")
-    private int id;
+    private Long id;
     @XmlElement(namespace="http://univrouen.fr/rss25")
     private String guid;
     @XmlElement(namespace="http://univrouen.fr/rss25")
@@ -22,18 +22,18 @@ public class ItemSummary {
 
     }
 
-    public ItemSummary(String guid, int id, String date) {
+    public ItemSummary(String guid, Long id, String date) {
         this.guid = guid;
         this.id = id;
         this.date = date;
     }
 
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

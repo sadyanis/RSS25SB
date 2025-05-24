@@ -3,8 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <title>Help</title>
+    <link rel="stylesheet" href="/Style/Accueil.css" />
 </head>
 <body>
-    <H1>Page d'aide</H1>
+<nav>
+    <ul>
+        <li><a href="/" th:href="@{/}">Home</a></li>
+        <li><a href="/help" th:href="@{/help}">Help</a></li>
+        <li>
+            <a href="/rss25SB/resume/html" th:href="@{/rss25SB/resume/html}"
+            >Articles (HTML)</a
+            >
+        </li>
+        <li>
+            <a href="/rss25SB/resume/xml" th:href="@{/rss25SB/resume/xml}"
+            >Articles (XML)</a
+            >
+        </li>
+
+        <li>
+            <a th:href="@{/transfert}">Transférer un fichier</a>
+        </li>
+
+        <li>
+            <a th:href="@{/convert}">Convertir un fichier</a>
+        </li>
+    </ul>
+</nav>
+<h1>Page d’aide – Opérations disponibles</h1>
+
+<table border="1">
+    <thead>
+    <tr>
+        <th>URL</th>
+        <th>Méthode</th>
+        <th>Résumé</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="op : ${operations}">
+        <td th:text="${op.url}"></td>
+        <td th:text="${op.method}"></td>
+        <td th:text="${op.summary}"></td>
+    </tr>
+    </tbody>
+</table>
 </body>
 </html>
