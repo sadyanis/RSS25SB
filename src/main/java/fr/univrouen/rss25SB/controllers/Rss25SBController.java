@@ -41,7 +41,7 @@ public class Rss25SBController {
     @Autowired
     private FeedRepository feedRepository;
 
-    @DeleteMapping(value = "/delete/{id}")
+    @DeleteMapping(value = "/rss25SB/delete/{id}")
     public ResponseEntity<Map<String, String>> deleteArticle(@PathVariable Long id) {
         return rss25Service.deleteArticle(id);
     }
