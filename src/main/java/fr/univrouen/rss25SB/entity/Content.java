@@ -8,6 +8,7 @@ public class Content {
     @Id @GeneratedValue
     private Long id;
     @Lob
+    @Basic(fetch = FetchType.EAGER)
     @Column(name= "content")
     private String content;
     private String type;

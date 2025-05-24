@@ -116,7 +116,7 @@ public class Rss25Service {
         }
 
     }
-
+    @Transactional
     public ResponseEntity<Map<String, String>> deleteArticle( Long id) {
         Optional<Item> itemOpt = itemRep.findById(id);
 
