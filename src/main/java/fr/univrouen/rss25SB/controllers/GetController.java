@@ -52,9 +52,8 @@ public class GetController {
 
         List<ItemSummary> summaries = items.stream()
                 .map(item -> new ItemSummary(
-                        item.getGuid(),item.getId().intValue(),
-                        item.getPublished() != null ? item.getPublished().toString()
-                                : (item.getUpdated() != null ? item.getUpdated().toString() : "N/A")
+                        item.getGuid(),item.getId(),
+                        item.getPublished() != null ? item.getPublished().toString() : (item.getUpdated() != null ? item.getUpdated().toString() : "N/A")
 
                 ))
                 .toList();

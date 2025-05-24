@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <title>Résumé des Items RSS</title>
+    <link rel="stylesheet" href="/Style/Accueil.css" />
     <style>
         table {
             width: 100%;
@@ -13,6 +15,9 @@
             padding: 8px;
             text-align: left;
         }
+        td a {
+            color: black;
+        }
         th {
             background-color: #f2f2f2;
         }
@@ -22,11 +27,36 @@
     </style>
 </head>
 <body>
+<nav>
+    <ul>
+        <li><a href="/" th:href="@{/}">Home</a></li>
+        <li><a href="/help" th:href="@{/help}">Help</a></li>
+        <li>
+            <a href="/rss25SB/resume/html" th:href="@{/rss25SB/resume/html}"
+            >Articles (HTML)</a
+            >
+        </li>
+        <li>
+            <a href="/rss25SB/resume/xml" th:href="@{/rss25SB/resume/xml}"
+            >Articles (XML)</a
+            >
+        </li>
+
+        <li>
+            <a th:href="@{/transfert}">Transférer un fichier</a>
+        </li>
+
+        <li>
+            <a th:href="@{/convert}">Convertir un fichier</a>
+        </li>
+    </ul>
+</nav>
 <h1>Liste des Items RSS</h1>
 
 <table >
     <thead>
     <tr>
+        <th>ID</th>
         <th>Titre</th>
         <th>GUID</th>
         <th>Date</th>
@@ -35,6 +65,7 @@
     </thead>
     <tbody>
     <tr th:each="item : ${items}">
+        <td th:text="${item.id}" > </td>
         <td th:text="${item.title}">Titre</td>
         <td>
             <a th:href="${item.guid}" th:text="${item.guid}"></a>

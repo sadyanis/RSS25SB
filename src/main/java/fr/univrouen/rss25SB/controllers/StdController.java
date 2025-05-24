@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Controller
@@ -25,12 +26,63 @@ public class StdController {
     @GetMapping("/rss25SB/resume/html")
     public String resume(Model model) {
         List<Item> items = ItemRepository.findAll();
+        // Log de debug pour voir ce qui est récupéré
+
         model.addAttribute("items", items);
         return "resumeHtml";
     }
-  
+
     @GetMapping("/help")
-        public String help(Model model) {
+    public String getHelp(Model model) {
+        List<Map<String, String>> operations = List.of(
+                Map.of(
+                        "url","/",
+                        "method", "GET",
+                        "summary", "Affiche la Page d'accueil du site"
+                ),
+                Map.of(
+                        "url","/help",
+                        "method","GET",
+                        "summary","Affiche la liste des opérations gérées par le service REST"
+                ),
+                Map.of(
+                        "url", "/rss25SB/resume/html",
+                        "method", "GET",
+                        "summary", "Affiche la liste des articles stockés  au format HTML"
+                ),
+                Map.of(
+                        "url", "/rss25SB/resume/xml",
+                        "method", "GET",
+                        "summary", "Retourne les résumés des articles stockés au format XML"
+                ),
+                Map.of(
+                        "url", "/rss25SB/html/{id}",
+                        "method", "GET",
+                        "summary", "Retourne le détail d’un article  dont l’identifiant est {id} au format HTML"
+                ),
+                Map.of(
+                        "url", "/rss25SB/resume/xml/{id}",
+                        "method", "GET",
+                        "summary", "Affiche le contenu complet de l’article dont l’identifiant est {id} au format XML"
+                ),
+                Map.of(
+                        "url", "/rss25SB/insert",
+                        "method", "POST",
+                        "summary", "Insère un nouvel article  (XML attendu)"
+                ),
+                Map.of(
+                        "url", "/transfert",
+                        "method", "GET",
+                        "summary", "Formulaire pour transférer un fichier XML"
+                ),
+                Map.of(
+                        "url", "/convert",
+                        "method", "GET",
+                        "summary", "Permet de convertir un fichier XML en HTML ou en résumé"
+                )
+        );
+
+        model.addAttribute("operations", operations);
         return "help";
     }
     
